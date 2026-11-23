@@ -1,0 +1,28 @@
+# Python caches and build artifacts
+__pycache__/
+*.py[cod]
+*.egg-info/
+/build/
+/dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local virtual environments
+/.venv/
+/venv/
+
+# Local credentials and environment settings
+.env
+.env.*
+!.env.example
+/.aws/
+
+# Generated experiment outputs (including model archives and TensorBoard logs)
+/results/
+
+# Cached datasets; retain the CIFAR-10 directory placeholder
+/datasets/*
+!/datasets/cifar10/
+/datasets/cifar10/*
+!/datasets/cifar10/.gitkeep

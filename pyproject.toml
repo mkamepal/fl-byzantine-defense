@@ -1,0 +1,115 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "fake-clients-detection-flower"
+version = "1.1.13"
+description = "Fake clients detection with TensorFlow/Keras and Flower"
+license = {file = "LICENSE"}
+dependencies = [
+    "flwr[simulation]>=1.36.0",
+    "flwr-datasets[vision]>=0.6.1",
+    "tensorflow==2.20.0",
+    "filelock>=3.12",
+    "tensorboard>=2.20",
+    "matplotlib>=3.7",
+    "pillow>=9.1",
+    "scikit-learn>=1.6",
+    "hdbscan>=0.8.40",
+    "openpyxl>=3.1,<4",
+]
+[tool.hatch.build.targets.wheel]
+packages = ["fl_defense"]
+
+[tool.flwr.app]
+publisher = "flwrlabs"
+fab-format-version = 1
+flwr-version-target = "1.36.0"
+# Bundle application code and its license; data and experiment artifacts stay local.
+# Flower includes pyproject.toml automatically.
+fab-include = ["fl_defense/**/*.py", "LICENSE"]
+
+[tool.flwr.app.components]
+serverapp = "fl_defense.server_app:app"
+clientapp = "fl_defense.client_app:app"
+
+[tool.flwr.app.config]
+num-server-rounds = 3
+local-epochs = 1
+batch-size = 32
+learning-rate = 0.005
+fraction-train = 1.0
+verbose = false
+save-model = false
+save-client-weights = true
+attacks-enabled = false
+# -1 inherits partition-seed; the effective default is 42.
+attacks-seed = -1
+attacks-num-malicious = 3
+attacks-max-fake-ratio = 0.7
+attacks-exclude-head = true
+attacks-head-client = "client_0"
+attacks-enabled-types = '["label_flip", "backdoor"]'
+# Empty string selects attacks uniformly instead of quota allocation.
+attacks-distribution = '{"label_flip":0.6,"backdoor":0.4}'
+attacks-label-flip-prob = 0.4
+attacks-backdoor-poison-prob = 0.4
+attacks-backdoor-target-label = 0
+attacks-backdoor-trigger-value = 1.0
+attacks-backdoor-position = "bottom_right"
+attacks-backdoor-patch-size-rule = "max_2_or_min_dimension_div_12"
+attacks-save-indices = false
+attacks-evaluate-asr = true
+# Model replacement shares attacks-num-malicious with other enabled types.
+attacks-model-replacement-variant = "basic"
+# Population sample-weight estimate; not post-filter or actual participant weight.
+attacks-model-replacement-scale-mode = "population_weight_estimate"
+attacks-model-replacement-scale = 1.0
+attacks-model-replacement-start-round = 1
+attacks-model-replacement-end-round = 0
+attacks-model-replacement-interval = 1
+attacks-model-replacement-epochs = 0
+attacks-model-replacement-learning-rate = 0.0
+attacks-model-replacement-alpha = 0.5
+clustering-enabled = false
+# Combined trust is active only when clustering is enabled. Set false for
+# the historical clustering-only selection; disabled runs invent no scores.
+trust-enabled = true
+direction-threshold-degrees = 90.0
+direction-epsilon = 1e-12
+direction-reference = "unweighted_all_client_mean"
+magnitude-threshold = 0.25
+magnitude-boundary-rtol = 1e-5
+magnitude-boundary-atol = 1e-8
+magnitude-reference = "round_start_global_model"
+validation-accuracy-tolerance = 0.06
+trust-threshold = 0.50
+trust-weight-clustering = 0.25
+trust-weight-direction = 0.25
+trust-weight-magnitude = 0.25
+trust-weight-validation = 0.25
+clustering-n-components = 2
+clustering-random-state = 42
+clustering-metric = "euclidean"
+clustering-min-cluster-size = 2
+clustering-min-samples = 1
+clustering-cluster-selection-method = "eom"
+clustering-cluster-selection-epsilon = 0.2
+clustering-allow-single-cluster = true
+clustering-head-client = "client_0"
+clustering-noise-distance-threshold = 1.5
+clustering-save-update-vectors = false
+clustering-save-pca-loadings = false
+num-clients = 15
+partition-method = "iid"
+partition-seed = 42
+dirichlet-alpha = 0.5
+dirichlet-min-partition-size = 10
+dirichlet-self-balancing = false
+dirichlet-shuffle = true
+results-dir = "/home/mahesh/Desktop/flower_fed/tensorflow/fl-byzantine-defense/results"
+simulation-config-json = "{}"
+
+# Absolute local path also works when Flower runs an installed app bundle.
+dataset-dir = "/home/mahesh/Desktop/flower_fed/tensorflow/fl-byzantine-defense/datasets"

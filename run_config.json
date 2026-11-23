@@ -1,0 +1,36 @@
+{
+  "simulation": {
+    "num-supernodes": 15,
+    "client-resources-num-cpus": 4,
+    "client-resources-num-gpus": 1.0
+  },
+  "training": {
+    "num-server-rounds": 3,
+    "local-epochs": 2,
+    "batch-size": 32,
+    "learning-rate": 0.001,
+    "fraction-train": 1.0,
+    "verbose": true,
+    "save-model": false,
+    "save-client-weights": true,
+    "attacks-enabled": true,
+    "attacks-num-malicious": 7,
+    "attacks-max-fake-ratio": 0.7,
+    "attacks-enabled-types": "[\"label_flip\",\"backdoor\",\"model_replacement\"]",
+    "attacks-distribution": "{\"label_flip\":0.4,\"backdoor\":0.3,\"model_replacement\":0.3}",
+    "attacks-model-replacement-variant": "basic",
+    "attacks-model-replacement-scale-mode": "population_weight_estimate",
+    "attacks-label-flip-prob": 0.4,
+    "attacks-backdoor-poison-prob": 0.4,
+    "clustering-enabled": true,
+    "clustering-noise-distance-threshold": 0.5,
+    "trust-threshold": 0.51,
+    "partition-method": "dirichlet", 
+    "partition-seed": 42,
+    "dirichlet-alpha": 0.5,
+    "dirichlet-min-partition-size": 10,
+    "dirichlet-self-balancing": false,
+    "dirichlet-shuffle": true
+  },
+  "_comment": "training.partition-method options: iid (IID partitioning), dirichlet (non-IID class distributions controlled by dirichlet-alpha)."
+}
