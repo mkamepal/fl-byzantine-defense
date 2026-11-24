@@ -1,0 +1,15 @@
+# Install from the repository root: python -m pip install -r requirements.txt
+# Keep these dependency constraints aligned with [project].dependencies in pyproject.toml.
+flwr[simulation]>=1.36.0
+flwr-datasets[vision]>=0.6.1
+tensorflow==2.20.0
+filelock>=3.12
+tensorboard>=2.20
+matplotlib>=3.7
+pillow>=9.1
+scikit-learn>=1.6
+hdbscan>=0.8.40
+openpyxl>=3.1,<4
+
+# Install the local fl_defense package as well as its dependencies.
+-e .

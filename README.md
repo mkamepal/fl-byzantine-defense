@@ -70,11 +70,22 @@ the current run directory. See [the combined defense guide](docs/combined-defens
 
 ### Install dependencies and project
 
-Install the dependencies defined in `pyproject.toml` as well as the `fl_defense` package.
+From the repository root, install the dependencies and the local `fl_defense`
+package into your activated Python environment:
 
 ```bash
-pip install -e .
+python -m pip install -r requirements.txt
 ```
+
+`requirements.txt` mirrors the dependency constraints in `pyproject.toml` and
+includes an editable installation of this project. `python -m pip install -e .`
+remains an equivalent alternative. These constraints are not a fully pinned
+environment lockfile. The launcher uses Python's built-in `tomllib`, so it needs
+Python 3.11 or newer, with a version supported by the dependencies.
+
+On another machine, also check the CPU/GPU resources in `run_config.json`. The
+supplied configuration requests a GPU; installing Python dependencies alone does
+not install an NVIDIA driver or configure a CUDA-enabled TensorFlow environment.
 
 ## Run the project
 
