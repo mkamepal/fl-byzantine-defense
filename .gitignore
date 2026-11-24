@@ -17,6 +17,7 @@ __pycache__/
 .env.*
 !.env.example
 /.aws/
+/run_config.local.json
 
 # Generated experiment outputs (including model archives and TensorBoard logs)
 /results/

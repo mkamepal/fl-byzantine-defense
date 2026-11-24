@@ -87,6 +87,59 @@ On another machine, also check the CPU/GPU resources in `run_config.json`. The
 supplied configuration requests a GPU; installing Python dependencies alone does
 not install an NVIDIA driver or configure a CUDA-enabled TensorFlow environment.
 
+### Set up a new Ubuntu GPU machine
+
+Copy the full repository to the new machine, then run as your normal user:
+
+```bash
+bash setup.sh --install-driver
+```
+
+The script targets **Ubuntu 22.04/24.04 on x86-64 with an NVIDIA GPU**. It uses
+sudo for Ubuntu prerequisites and, if `nvidia-smi` fails, installs Ubuntu's
+recommended NVIDIA driver. After installing a driver it exits with status 2:
+reboot manually, complete Secure Boot key enrollment if prompted, and rerun the
+same command. A functioning driver is retained. It does not reboot automatically.
+
+The remaining setup installs checksum-verified Miniforge (providing Conda) at
+`~/miniforge3`, creates the `fl-byzantine-defense` environment with Python 3.11,
+and installs this project plus `tensorflow[and-cuda]==2.20.0`. This installs the
+CUDA/cuDNN libraries TensorFlow needs inside the environment; a separate
+system-wide CUDA development toolkit is not required for this project. It checks
+package consistency, application imports, and actual GPU matrix/convolution operations,
+then downloads/reuses CIFAR-10 through the existing cache loader. Network access
+and several GB of free disk space are needed. Installation failures stop setup.
+
+It creates `run_config.local.json` with this checkout's absolute dataset path,
+preserving all other experiment settings. Existing local configurations and
+cached data are retained on reruns. Review the local configuration's CPU/GPU
+reservations for your new hardware before training. Run with that configuration
+to avoid the original machine's dataset path in `pyproject.toml`:
+
+```bash
+source "$HOME/miniforge3/etc/profile.d/conda.sh"
+conda activate fl-byzantine-defense
+python run.py --config run_config.local.json
+```
+
+Use `bash setup.sh --help` for options. For an existing Conda installation, pass
+`--conda-prefix "$HOME/miniconda3"`; the script creates/reuses the dedicated
+environment there. `--skip-system-packages` skips Ubuntu prerequisites, and
+`--skip-data` defers the dataset download to the first run. Shell startup files
+are not modified. The script installs dependencies into the selected environment
+on reruns, so use a dedicated environment. Dependency ranges remain those from
+the project; this is not a fully pinned reproducibility lockfile.
+
+Under Ubuntu in WSL2, first install the NVIDIA driver on the **Windows host**
+and enable/update WSL2. Run `bash setup.sh` inside Ubuntu; the script will never
+install a Linux display driver inside WSL. Native Windows, macOS, ARM machines,
+and CPU-only setup are outside this script's scope.
+
+Installation references: [Miniforge](https://github.com/conda-forge/miniforge),
+[TensorFlow pip/GPU setup](https://www.tensorflow.org/install/pip),
+[Ubuntu NVIDIA drivers](https://ubuntu.com/server/docs/how-to/graphics/install-nvidia-drivers/),
+and [NVIDIA WSL setup](https://docs.nvidia.com/cuda/wsl-user-guide/index.html).
+
 ## Run the project
 
 ### Run using one configuration file
